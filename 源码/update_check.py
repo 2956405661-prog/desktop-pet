@@ -21,7 +21,7 @@ import re
 import time
 import urllib.request
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 DEFAULT_MANIFEST = (
     "https://cdn.jsdelivr.net/gh/2956405661-prog/desktop-pet@main/update.json",
     "https://raw.githubusercontent.com/2956405661-prog/desktop-pet/main/update.json",

@@ -29,7 +29,7 @@ import tkinter as tk
 try:
     from update_check import VERSION, check_for_update
 except Exception:                      # 单独跑 pet.py 时也不许因为少个模块起不来
-    VERSION = "1.0.0"
+    VERSION = "1.0.1"
 
     def check_for_update(*_a, **_k):
         return None
