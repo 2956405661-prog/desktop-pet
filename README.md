@@ -14,8 +14,8 @@
 
 | 文件 | 装法 | 适合 |
 | --- | --- | --- |
-| `桌面宠物-x.y.z-安装程序.exe` | 双击，按向导点下一步 | 大多数人 |
-| `桌面宠物-x.y.z-免安装版.zip` | 解压 → 双击 `接入ClaudeCode.cmd` | 不想装东西的人；**自动安装被拦时的退路** |
+| `desktop-pet-x.y.z-setup.exe` | 双击，按向导点下一步 | 大多数人 |
+| `desktop-pet-x.y.z-portable.zip` | 解压 → 双击 `接入ClaudeCode.cmd` | 不想装东西的人；**自动安装被拦时的退路** |
 
 **自动安装没成功？就用手动装**：把 zip 解压到任意文件夹（比如 `D:\桌面宠物`），
 双击里面的 `接入ClaudeCode.cmd`，看到"好了"就成。
@@ -43,11 +43,50 @@
 - 双击时蓝色框"Windows 已保护你的电脑"→ 点**更多信息 → 仍要运行**
 - 杀软弹"可疑程序"→ 选**允许 / 信任**
 
-增强信任的证据：
+### 实测扫描结果（如实公开，两个文件都扫了）
 
-- 本版本 VirusTotal 扫描结果：**（待填：把扫描结果的链接贴在这里，例：71 个引擎 0 报毒）**
-- SHA256 校验值：见 Releases 里的 `校验值.txt`
-- 源码就在本仓库里，可以自己看（就一个 Python 程序 + 一个钩子脚本）
+| 文件 | 结果 | 报毒的是谁 |
+| --- | --- | --- |
+| 安装程序（32 MB） | **6 / 71** | CrowdStrike Falcon（ML 90%）、SentinelOne（Static AI）、DeepInstinct、Elastic、SecureAge、Bkav Pro |
+| 免安装版主程序（2.7 MB） | **4 / 70** | Arctic Wolf、**Microsoft（Trojan:Win32/Wacatac.C!ml）**、SecureAge、Skyhigh |
+
+**关键在于"报毒的那几个引擎是什么类型"**：
+
+- 报毒的全是**机器学习 / 启发式**判定——注意名字里的 `!ml`、`Static AI`、`ML`、`Confidence 90%`，
+  它们不看你代码干了什么，只看"文件长得像不像坏东西"
+- 这个程序用 **PyInstaller** 打包，外壳的动作是"**自我解包 → 释放可执行文件 → 运行**"，
+  而这恰好是恶意软件最经典的形态，所以 ML 引擎容易亮灯
+- **Kaspersky、ESET、Bitdefender、Avast/AVG、Sophos、Trend Micro、Symantec、火绒、腾讯、金山、瑞星、阿里云**
+  这些主流引擎**全部未报**
+
+关于 `Wacatac.C!ml`：这是微软 ML 引擎**最出名的一类误报**，`!ml` 就是 machine learning 的意思。
+大量用 PyInstaller / Electron 打包的合法软件都被它误伤过。**我会去微软提交误报**（见下）。
+
+扫描结果链接（可自行核对，不用登录）：
+
+- 安装程序：<https://www.virustotal.com/gui/file/5efa336ec98c392e1072bbbdd6205d662fa752a32e945b65732a54b46a4310d4>
+- 免安装版主程序：<https://www.virustotal.com/gui/file/b6baf14262738113a2b56310d7c1998087dda0bfdd4c286e9cefe83ab5812d25>
+
+### 被 Defender 拦了怎么办（三步）
+
+1. **下载时**：浏览器提示"不常见"→ 点「保留」
+2. **双击时**：蓝色框"Windows 已保护你的电脑"→ 点「**更多信息**」→「**仍要运行**」
+3. **被隔离/删掉了**（Microsoft 报 Wacatac 时常见）：
+   - 打开「Windows 安全中心」→「病毒和威胁防护」→「保护历史记录」→ 找到它 → 点「**还原**」
+   - 或者「病毒和威胁防护」→「管理设置」→「**排除项**」→ 添加文件夹（把安装目录加进去）
+   - 命令行也行（管理员 PowerShell）：`Add-MpPreference -ExclusionPath "D:\桌面宠物"`
+
+### 想彻底避开打包器？（最硬核的一条路）
+
+**直接跑源码**，不经过 PyInstaller，就不会有这类误报：
+
+1. 装 Python 3.9+（勾 "Add Python to PATH"）
+2. `pip install pillow`
+3. 仓库里 `源码\` 文件夹下载下来 → 双击 `启动宠物.bat` → 双击 `接入ClaudeCode.cmd`
+
+源码就在仓库的 [源码](源码/) 文件夹里，一共几个文件，谁都能看——这也是最有力的"我没干坏事"的证据。
+
+SHA256 校验值：见 Releases 里的 `校验值.txt`。
 
 实在不放心，用**免安装版**：解压即用，不写系统目录，不做任何安装动作。
 
