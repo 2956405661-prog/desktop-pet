@@ -77,7 +77,7 @@ DEFAULT_CONFIG = {
     "card_seconds": 0.0,              # 结果卡片停留多久；0 = 一直留着（直到你点它或来了新状态）
     "task_ttl": 1800,                 # 任务卡活多久（秒）：太久没动静的会话卡片自动收掉
     "follow_claude": True,            # 跟着 Claude Code 一起进退：它关了，宠物过一会儿也退下
-    "exit_grace_seconds": 180,        # Claude 关了之后再守多久才退场（秒）
+    "exit_grace_seconds": 30,         # Claude 关了之后再守多久才退场（秒）
     "claude_check_seconds": 5,        # 多久查一次 Claude 还在不在
     "update_check": True,             # 是否检查新版本（只读一个公开的小文件，不上传任何东西）
     "update_manifest": None,          # 版本清单地址；None＝用内置的两个（CDN + raw）
