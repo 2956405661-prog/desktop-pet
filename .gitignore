@@ -1,0 +1,24 @@
+# 运行期产生的文件（不进仓库）
+__pycache__/
+*.py[cod]
+*.log
+pet_state.json
+pet_hook_memory.json
+pet_hook.log
+pet_jump.log
+pet_errors.log
+
+# 本地个人配置（每个人位置/尺寸可能不同）
+pet_config.json
+
+# 构建产物（发布包走 GitHub Releases，不进仓库）
+build/
+dist/
+*.spec
+*.exe
+*.zip
+
+# 系统垃圾文件
+Thumbs.db
+desktop.ini
+.DS_Store
