@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
-  "notes": "第一个版本：盯着 Claude Code 干活，任务卡片会叠成一叠，点哪条跳哪条",
-  "url": "https://github.com/2956405661-prog/desktop-pet/releases/download/v1.0.0/desktop-pet-1.0.0-setup.exe"
+  "version": "1.0.1",
+  "notes": "Claude 关掉后宠物 30 秒就退场（原来要等 3 分钟）",
+  "url": "https://github.com/2956405661-prog/desktop-pet/releases/download/v1.0.1/desktop-pet-1.0.1-setup.exe"
 }

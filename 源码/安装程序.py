@@ -61,7 +61,7 @@ def version() -> str:
         from update_check import VERSION
         return VERSION
     except Exception:
-        return "1.0.0"
+        return "1.0.1"
 
 
 def main() -> int:

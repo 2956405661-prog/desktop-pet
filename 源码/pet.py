@@ -29,7 +29,7 @@ import tkinter as tk
 try:
     from update_check import VERSION, check_for_update
 except Exception:                      # 单独跑 pet.py 时也不许因为少个模块起不来
-    VERSION = "1.0.0"
+    VERSION = "1.0.1"
 
     def check_for_update(*_a, **_k):
         return None
@@ -132,14 +132,48 @@ STATE_TALK = {
 
 # ----------------------------------------------------------------- 配置
 
+CONFIG_VERSION = 1                  # 配置文件结构版本：用来认出"这份配置是老版本留下的"
+
+
+def migrate_config(raw: dict) -> bool:
+    """把老版本留下的配置升上来。
+
+    只动那些还停在旧默认值的键，改完写一个版本记号，以后不再碰。
+    用户自己调过的值一律不碰 —— 所以升级不会冒犯任何人。
+    """
+    try:
+        have = int(raw.get("config_version", 0) or 0)
+    except Exception:
+        have = 0
+    if have >= CONFIG_VERSION:
+        return False
+    # 1.0.0 的默认宽限期是 180 秒；1.0.1 起改成 30 秒。
+    # 只有"正好等于旧默认值"的才顺手升级，用户自己设成别的数字的（比如 600）原样保留。
+    if raw.get("exit_grace_seconds") == 180:
+        raw["exit_grace_seconds"] = 30
+    raw["config_version"] = CONFIG_VERSION
+    return True
+
+
 def load_config() -> dict:
     cfg = dict(DEFAULT_CONFIG)
+    raw = {}
     if os.path.exists(CONFIG_PATH):
         try:
             with open(CONFIG_PATH, "r", encoding="utf-8") as fh:
-                cfg.update(json.load(fh))
+                raw = json.load(fh)
         except Exception as exc:
             print(f"[pet] 配置文件读取失败，已用默认值：{exc}")
+            raw = {}
+        if isinstance(raw, dict) and raw:
+            try:
+                if migrate_config(raw):
+                    # 只把用户自己那份键写回去（不掺默认值），
+                    # 这样以后默认值再变，用户也还能跟着变
+                    save_config(raw)
+            except Exception:
+                pass
+            cfg.update(raw)
     return cfg
 
 
